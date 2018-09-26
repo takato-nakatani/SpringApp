@@ -3,11 +3,13 @@ app_server/
 mysql_server/
 redis_server/
 docker-compose.yml
+node_modules/
 
 spring_api/.idea
 spring_api/.mvn
 spring_api/target
 spring_api/mvnw
-spring_api/mvnw.cmd
-spring_api/tktapp.iml
-
+spring_api/*.cmd
+spring_api/*.iml
+spring_api/*.json
+spring_api/*.js
