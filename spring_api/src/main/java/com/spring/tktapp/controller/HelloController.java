@@ -6,9 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Optional;
 
 @Controller
 public class HelloController {
@@ -35,6 +38,21 @@ public class HelloController {
     @Transactional(readOnly=false)
     //@ModelAttribute("formModel") MyData mydataとすることでMyDataクラスをインスタンス化してformModelの値を埋め込むことができ、あとはmydataをDBにインサートすればOK。
     public ModelAndView form(@ModelAttribute("formModel") MyData mydata, ModelAndView mav){
+        myDataRepository.saveAndFlush(mydata);
+        return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
+    public ModelAndView edit(@ModelAttribute MyData mydata, @PathVariable int id, ModelAndView mav){
+        mav.setViewName("edit");
+        mav.addObject("title", "edit mydata.");
+        Optional<MyData> data = myDataRepository.findById((long)id);
+        mav.addObject("formModel", data.get());
+        return mav;
+    }
+
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.POST)
+    public ModelAndView update(@ModelAttribute MyData mydata, ModelAndView mav){
         myDataRepository.saveAndFlush(mydata);
         return new ModelAndView("redirect:/");
     }
