@@ -3,11 +3,12 @@ spring:
     active: dev
 
   datasource:
+    driverClassName: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/sample_db
     username: test_user
     password: test_user
   jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQL57Dialect
     show-sql: true
     hibernate:
       ddl-auto: update
@@ -27,11 +28,12 @@ server:
 spring:
   profiles: docker
   datasource:
+    driverClassName: com.mysql.jdbc.Driver
     url: jdbc:mysql://mysql-server:3306/sample_db
     username: test_user
     password: test_user
   jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQL57Dialect
     show-sql: true
     hibernate:
       ddl-auto: update
