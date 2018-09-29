@@ -43,7 +43,7 @@ public class HelloController {
         mav.setViewName("index");
         mav.addObject("msg", "this is sample content");
         mav.addObject("formModel", mydata);
-        Iterable<MyData> list = dao.getAll();
+        Iterable<MyData> list = myDataRepository.findAllOrderByName();
         mav.addObject("datalist", list);
         return mav;
     }
