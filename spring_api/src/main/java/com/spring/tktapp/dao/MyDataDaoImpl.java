@@ -47,9 +47,16 @@ public class MyDataDaoImpl implements MyDataDao<MyData> {
     @Override
     public List<MyData> find(String fstr){
         List<MyData> list = null;
-        String qstr = "from MyData where id = :fstr";
+        String qstr = "from MyData where id = :fid or name like :fname or mail like :fmail";
+        Long fid = 0L;
+        try{
+            fid = Long.parseLong(fstr);
+        } catch (NumberFormatException e){
+            e.printStackTrace();
+        }
+        //fnameは検索文字列の一部がマッチングすればいいので"%"で挟んでいる。
+        Query query = entityManager.createQuery(qstr).setParameter("fid", fid).setParameter("fname", "%" + fstr + "%").setParameter("fmail", fstr + "@%");
         //setParameterで上のクエリ文の「:fstr」へ値を挿入している１つ目の引数はどの部分に挿入するかで、2つ目の引数は何を挿入するかを指定している。
-        Query query = entityManager.createQuery(qstr).setParameter("fstr", Long.parseLong(fstr));
         list = query.getResultList();
         return list;
     }
