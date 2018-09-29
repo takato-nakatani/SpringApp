@@ -42,4 +42,15 @@ public class MyDataDaoImpl implements MyDataDao<MyData> {
         //nameは重複する可能性があるのでgetResultList()を使用
         return (List<MyData>)entityManager.createQuery("from MyData where name = " + name).getResultList();
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<MyData> find(String fstr){
+        List<MyData> list = null;
+        String qstr = "from MyData where id = :fstr";
+        //setParameterで上のクエリ文の「:fstr」へ値を挿入している１つ目の引数はどの部分に挿入するかで、2つ目の引数は何を挿入するかを指定している。
+        Query query = entityManager.createQuery(qstr).setParameter("fstr", Long.parseLong(fstr));
+        list = query.getResultList();
+        return list;
+    }
 }

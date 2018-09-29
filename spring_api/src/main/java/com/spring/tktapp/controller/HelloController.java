@@ -11,8 +11,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -28,8 +31,12 @@ public class HelloController {
     @PersistenceContext
     EntityManager entityManager;
 
-    private MyDataDaoImpl dao = new MyDataDaoImpl(entityManager);
+    private MyDataDaoImpl dao;
 
+    @PostConstruct
+    public void init(){
+        dao = new MyDataDaoImpl(entityManager);
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(@ModelAttribute("formModel") MyData mydata, ModelAndView mav){
@@ -89,5 +96,31 @@ public class HelloController {
     public ModelAndView remove(@RequestParam long id, ModelAndView mav){
         myDataRepository.deleteById(id);
         return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping(value = "/find", method = RequestMethod.GET)
+    public ModelAndView find(ModelAndView mav){
+        mav.setViewName("find");
+        mav.addObject("title", "find page");
+        mav.addObject("msg", "MyDataのサンプルです");
+        mav.addObject("value", "");
+        Iterable<MyData> list = dao.getAll();
+        mav.addObject("datalist", list);
+        return mav;
+    }
+
+    @RequestMapping(value = "/find", method = RequestMethod.POST)
+    public ModelAndView search(ModelAndView mav, HttpServletRequest request){
+        mav.setViewName("find");
+        String param = request.getParameter("fstr");
+        if(param == ""){
+            mav = new ModelAndView("redirect:/find");
+        } else {
+            mav.addObject("msg", "「" + param + "」の検索結果");
+            mav.addObject("value", param);
+            List<MyData> list = dao.find(param);
+            mav.addObject("datalist", list);
+        }
+        return mav;
     }
 }
