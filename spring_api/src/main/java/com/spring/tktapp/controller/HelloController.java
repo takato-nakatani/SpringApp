@@ -1,5 +1,6 @@
 package com.spring.tktapp.controller;
 
+import com.spring.tktapp.dao.MyDataDaoImpl;
 import com.spring.tktapp.entity.MyData;
 import com.spring.tktapp.repositories.MyDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Optional;
 
 @Controller
@@ -22,13 +25,18 @@ public class HelloController {
         this.myDataRepository=myDataRepository;
     }
 
+    @PersistenceContext
+    EntityManager entityManager;
+
+    private MyDataDaoImpl dao = new MyDataDaoImpl(entityManager);
+
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(@ModelAttribute("formModel") MyData mydata, ModelAndView mav){
         mav.setViewName("index");
         mav.addObject("msg", "this is sample content");
         mav.addObject("formModel", mydata);
-        Iterable<MyData> list = myDataRepository.findAll();
+        Iterable<MyData> list = dao.getAll();
         mav.addObject("datalist", list);
         return mav;
     }

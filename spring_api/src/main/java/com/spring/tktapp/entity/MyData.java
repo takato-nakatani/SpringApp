@@ -1,5 +1,6 @@
 package com.spring.tktapp.entity;
 
+import com.spring.tktapp.validation.annotation.Phone;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,5 +33,6 @@ public class MyData {
     private Integer age;
 
     @Column(nullable = true)
+    @Phone(onlyNumber = true)
     private String memo;
 }
