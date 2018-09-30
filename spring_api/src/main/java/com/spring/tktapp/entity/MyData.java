@@ -9,6 +9,14 @@ import javax.validation.constraints.*;
 
 @Entity
 @Table(name="mydata")
+//クエリアノテーションを利用することでDaoクラスに直接クエリ文を書かなくてよくなる。
+//エンティティクラスにクエリ文を書くため、「このエンティティを操作するのに必要なものはすべてエンティティ自身に用意されている」という状態にすることができる。
+@NamedQueries(
+    @NamedQuery(
+        name="findWithName",
+        query="from MyData where name like :fname"
+    )
+)
 @Getter
 @Setter
 public class MyData {

@@ -4,6 +4,9 @@ import com.spring.tktapp.entity.MyData;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 public class MyDataDaoImpl implements MyDataDao<MyData> {
@@ -22,11 +25,12 @@ public class MyDataDaoImpl implements MyDataDao<MyData> {
 
     @Override
     public List<MyData> getAll(){
-        Query query = entityManager.createQuery("from MyData");
-
-        @SuppressWarnings("unchecked")
-        List<MyData> list = query.getResultList();
-        entityManager.close();
+        List<MyData> list = null;
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<MyData> query = builder.createQuery(MyData.class);
+        Root<MyData> root = query.from(MyData.class);
+        query.select(root).orderBy(builder.asc(root.get("name")));
+        list = (List<MyData>)entityManager.createQuery(query).getResultList();
         return list;
     }
 
@@ -47,16 +51,12 @@ public class MyDataDaoImpl implements MyDataDao<MyData> {
     @Override
     public List<MyData> find(String fstr){
         List<MyData> list = null;
-        Long fid = 0L;
-        try{
-            fid = Long.parseLong(fstr);
-        } catch (NumberFormatException e){
-            //e.printStackTrace();
-        }
-        //fnameは検索文字列の一部がマッチングすればいいので"%"で挟んでいる。
-        Query query = entityManager.createNamedQuery("findWithName").setParameter("fname", "%" + fstr + "%");
-        //setParameterで上のクエリ文の「:fstr」へ値を挿入している１つ目の引数はどの部分に挿入するかで、2つ目の引数は何を挿入するかを指定している。
-        list = query.getResultList();
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<MyData> query = builder.createQuery(MyData.class);
+        Root<MyData> root = query.from(MyData.class);
+        //SQLを書かなくても、下のqueryの部分でwhereとかを設定することができる。
+        query.select(root).where(builder.equal(root.get("name"), fstr));
+        list = (List<MyData>)entityManager.createQuery(query).getResultList();
         return list;
     }
 }
