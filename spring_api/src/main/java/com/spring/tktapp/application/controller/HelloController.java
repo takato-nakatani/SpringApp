@@ -1,8 +1,8 @@
-package com.spring.tktapp.controller;
+package com.spring.tktapp.application.controller;
 
-import com.spring.tktapp.dao.MyDataDaoImpl;
-import com.spring.tktapp.entity.MyData;
-import com.spring.tktapp.repositories.MyDataRepository;
+import com.spring.tktapp.application.entity.MyData;
+import com.spring.tktapp.domain.repositories.MyDataRepository;
+import com.spring.tktapp.domain.service.MyDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
@@ -21,30 +19,28 @@ import java.util.Optional;
 @Controller
 public class HelloController {
 
-    private MyDataRepository myDataRepository;
+    private final MyDataRepository myDataRepository;
+    private final MyDataService myDataService;
 
     @Autowired
-    public void setMyDataRepository(MyDataRepository myDataRepository){
-        this.myDataRepository=myDataRepository;
+    public HelloController(MyDataService myDataService, MyDataRepository myDataRepository) {
+        this.myDataService = myDataService;
+        this.myDataRepository = myDataRepository;
     }
 
-    @PersistenceContext
-    EntityManager entityManager;
-
-    private MyDataDaoImpl dao;
-
-    @PostConstruct
-    public void init(){
-        dao = new MyDataDaoImpl(entityManager);
-    }
+    //自動的にmyDataServiceのインスタンスを作成する@Autowiredアノテーションをつける
+//    @Autowired
+//    public void setMyDataService(MyDataService myDataService){
+//        this.myDataService = myDataService;
+//    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ModelAndView index(@ModelAttribute("formModel") MyData mydata, ModelAndView mav){
+    public ModelAndView index(ModelAndView mav){
         mav.setViewName("index");
+        mav.addObject("title", "find page");
         mav.addObject("msg", "this is sample content");
-        mav.addObject("formModel", mydata);
 //        Iterable<MyData> list = myDataRepository.findAllOrderByName();
-        Iterable<MyData> list = dao.getAll();
+        Iterable<MyData> list = myDataService.getAll();
         mav.addObject("datalist", list);
         return mav;
     }
@@ -105,7 +101,7 @@ public class HelloController {
         mav.addObject("title", "find page");
         mav.addObject("msg", "MyDataのサンプルです");
         mav.addObject("value", "");
-        Iterable<MyData> list = dao.getAll();
+        Iterable<MyData> list = myDataService.getAll();
         mav.addObject("datalist", list);
         return mav;
     }
@@ -117,9 +113,10 @@ public class HelloController {
         if(param == ""){
             mav = new ModelAndView("redirect:/find");
         } else {
+            mav.addObject("title", "Find Request");
             mav.addObject("msg", "「" + param + "」の検索結果");
             mav.addObject("value", param);
-            List<MyData> list = dao.find(param);
+            List<MyData> list = myDataService.find(param);
             mav.addObject("datalist", list);
         }
         return mav;

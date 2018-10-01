@@ -1,9 +1,8 @@
-package com.spring.tktapp.dao;
+package com.spring.tktapp.application.dao;
 
-import com.spring.tktapp.entity.MyData;
+import com.spring.tktapp.application.entity.MyData;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -25,12 +24,15 @@ public class MyDataDaoImpl implements MyDataDao<MyData> {
 
     @Override
     public List<MyData> getAll(){
+        int offset = 1;
+        int limit = 2;
         List<MyData> list = null;
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<MyData> query = builder.createQuery(MyData.class);
         Root<MyData> root = query.from(MyData.class);
-        query.select(root).orderBy(builder.asc(root.get("name")));
-        list = (List<MyData>)entityManager.createQuery(query).getResultList();
+        query.select(root);
+        //取り出す位置と個数をそれぞれsetFirstResult()と、setMaxResult()で設定している。
+        list = (List<MyData>)entityManager.createQuery(query).setFirstResult(offset).setMaxResults(limit).getResultList();
         return list;
     }
 

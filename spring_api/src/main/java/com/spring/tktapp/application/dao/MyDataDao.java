@@ -1,4 +1,4 @@
-package com.spring.tktapp.dao;
+package com.spring.tktapp.application.dao;
 
 import java.io.Serializable;
 import java.util.List;

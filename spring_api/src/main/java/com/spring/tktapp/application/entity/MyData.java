@@ -1,4 +1,4 @@
-package com.spring.tktapp.entity;
+package com.spring.tktapp.application.entity;
 
 import com.spring.tktapp.validation.annotation.Phone;
 import lombok.Getter;
@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.util.List;
 
 @Entity
 @Table(name="mydata")
@@ -43,4 +44,8 @@ public class MyData {
     @Column(nullable = true)
     @Phone(onlyNumber = true)
     private String memo;
+
+    @OneToMany
+    @Column(nullable = true)
+    private List<MsgData> msgdatas;
 }

@@ -1,6 +1,6 @@
-package com.spring.tktapp.repositories;
+package com.spring.tktapp.domain.repositories;
 
-import com.spring.tktapp.entity.MyData;
+import com.spring.tktapp.application.entity.MyData;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
