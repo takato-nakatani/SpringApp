@@ -2,7 +2,7 @@ package com.spring.tktapp.application.controller;
 
 import com.spring.tktapp.application.entity.MyData;
 import com.spring.tktapp.domain.repositories.MyDataRepository;
-import com.spring.tktapp.domain.service.MyDataService;
+import com.spring.tktapp.domain.service.MyDataServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
@@ -20,11 +19,11 @@ import java.util.Optional;
 public class HelloController {
 
     private final MyDataRepository myDataRepository;
-    private final MyDataService myDataService;
+    private final MyDataServiceImpl myDataServiceImpl;
 
     @Autowired
-    public HelloController(MyDataService myDataService, MyDataRepository myDataRepository) {
-        this.myDataService = myDataService;
+    public HelloController(MyDataServiceImpl myDataServiceImpl, MyDataRepository myDataRepository) {
+        this.myDataServiceImpl = myDataServiceImpl;
         this.myDataRepository = myDataRepository;
     }
 
@@ -40,7 +39,7 @@ public class HelloController {
         mav.addObject("title", "find page");
         mav.addObject("msg", "this is sample content");
 //        Iterable<MyData> list = myDataRepository.findAllOrderByName();
-        Iterable<MyData> list = myDataService.getAll();
+        Iterable<MyData> list = myDataServiceImpl.getAll();
         mav.addObject("datalist", list);
         return mav;
     }
@@ -101,7 +100,7 @@ public class HelloController {
         mav.addObject("title", "find page");
         mav.addObject("msg", "MyDataのサンプルです");
         mav.addObject("value", "");
-        Iterable<MyData> list = myDataService.getAll();
+        Iterable<MyData> list = myDataServiceImpl.getAll();
         mav.addObject("datalist", list);
         return mav;
     }
@@ -116,7 +115,7 @@ public class HelloController {
             mav.addObject("title", "Find Request");
             mav.addObject("msg", "「" + param + "」の検索結果");
             mav.addObject("value", param);
-            List<MyData> list = myDataService.find(param);
+            List<MyData> list = myDataServiceImpl.find(param);
             mav.addObject("datalist", list);
         }
         return mav;

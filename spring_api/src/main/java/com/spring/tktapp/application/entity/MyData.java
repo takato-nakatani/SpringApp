@@ -1,8 +1,7 @@
 package com.spring.tktapp.application.entity;
 
 import com.spring.tktapp.validation.annotation.Phone;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
