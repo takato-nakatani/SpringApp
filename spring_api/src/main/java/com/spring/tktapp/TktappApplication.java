@@ -18,6 +18,6 @@ public class TktappApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TktappApplication.class, args);
-//		SpringApplication.run(TktappApplicationConfig.class, args);
+		SpringApplication.run(TktappApplicationConfig.class, args);
 	}
 }

@@ -1,5 +1,6 @@
 package com.spring.tktapp.application.controller;
 
+import com.spring.tktapp.MyDataBean;
 import com.spring.tktapp.application.entity.MyData;
 import com.spring.tktapp.domain.repositories.MyDataRepository;
 import com.spring.tktapp.domain.service.MyDataServiceImpl;
@@ -20,18 +21,14 @@ public class HelloController {
 
     private final MyDataRepository myDataRepository;
     private final MyDataServiceImpl myDataServiceImpl;
+    private final MyDataBean myDataBean;
 
     @Autowired
-    public HelloController(MyDataServiceImpl myDataServiceImpl, MyDataRepository myDataRepository) {
+    public HelloController(MyDataServiceImpl myDataServiceImpl, MyDataRepository myDataRepository, MyDataBean myDataBean) {
         this.myDataServiceImpl = myDataServiceImpl;
         this.myDataRepository = myDataRepository;
+        this.myDataBean = myDataBean;
     }
-
-    //自動的にmyDataServiceのインスタンスを作成する@Autowiredアノテーションをつける
-//    @Autowired
-//    public void setMyDataService(MyDataService myDataService){
-//        this.myDataService = myDataService;
-//    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(ModelAndView mav){
@@ -41,6 +38,17 @@ public class HelloController {
 //        Iterable<MyData> list = myDataRepository.findAllOrderByName();
         Iterable<MyData> list = myDataServiceImpl.getAll();
         mav.addObject("datalist", list);
+        return mav;
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ModelAndView indexById(@PathVariable long id, ModelAndView mav){
+        mav.setViewName("pickup");
+        mav.addObject("title", "pickUp");
+        String table = "<table>" + myDataBean.getTableTagById(id) + "</table>";
+        mav.addObject("msg", "pickup data id = " + id);
+        mav.addObject("data", table);
+
         return mav;
     }
 
@@ -120,4 +128,6 @@ public class HelloController {
         }
         return mav;
     }
+
+
 }
