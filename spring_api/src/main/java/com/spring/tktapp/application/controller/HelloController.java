@@ -5,6 +5,8 @@ import com.spring.tktapp.application.entity.MyData;
 import com.spring.tktapp.domain.repositories.MyDataRepository;
 import com.spring.tktapp.domain.service.MyDataServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -129,5 +131,15 @@ public class HelloController {
         return mav;
     }
 
+    @RequestMapping(value = "/page", method = RequestMethod.GET)
+    public ModelAndView index(ModelAndView mav, Pageable pageable){
+        mav.setViewName("index");
+        mav.addObject("title", "Find Page");
+        mav.addObject("msg", "MyDataのサンプルです");
+        Page<MyData> list = myDataRepository.findAll(pageable);
+        mav.addObject("datalist", list);
+
+        return mav;
+    }
 
 }

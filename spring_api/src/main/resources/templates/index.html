@@ -1,22 +1,8 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:my="http://www.w3.org/1999/xhtml">
 <head>
     <title>index page</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script th:inline="javascript">
-        $(document).ready(function(){
-            var num = /*[[${param.id[0]}]]*/;
-            $.get("/rest/" + num, null, callback);
-        });
-        function callback() {
-            $('#obj').append('<li>id: ' + result.id + '</li>');
-            $('#obj').append('<li>name: ' + result.name + '</li>');
-            $('#obj').append('<li>mail: ' + result.mail + '</li>');
-            $('#obj').append('<li>age: ' + result.age + '</li>');
-            $('#obj').append('<li>memo: ' + result.memo + '</li>');
-        }
-    </script>
     <style>
         h1 {font-size:18pt; font-weight:bold; color:gray}
         body{font-size:13pt; color:gray; margin:5px 25px;}
@@ -39,5 +25,10 @@
             <td th:text="${obj.memo}"></td>
         </tr>
     </table>
+    <div>
+        <a my:mypage="${datalist.getNumber() - 1}">&lt;&lt;prev</a>
+        |
+        <a my:mypage="${datalist.getNumber() + 1}">next&gt;&gt;</a>
+    </div>
 </body>
 </html>
