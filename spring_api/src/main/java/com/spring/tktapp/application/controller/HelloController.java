@@ -2,6 +2,8 @@ package com.spring.tktapp.application.controller;
 
 import com.spring.tktapp.MyDataBean;
 import com.spring.tktapp.application.entity.MyData;
+import com.spring.tktapp.application.entity.MyDataMongo;
+import com.spring.tktapp.domain.repositories.MyDataMongoRepository;
 import com.spring.tktapp.domain.repositories.MyDataRepository;
 import com.spring.tktapp.domain.service.MyDataServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,21 +26,24 @@ public class HelloController {
     private final MyDataRepository myDataRepository;
     private final MyDataServiceImpl myDataServiceImpl;
     private final MyDataBean myDataBean;
+    private final MyDataMongoRepository myDataMongoRepository;
 
     @Autowired
-    public HelloController(MyDataServiceImpl myDataServiceImpl, MyDataRepository myDataRepository, MyDataBean myDataBean) {
+    public HelloController(MyDataServiceImpl myDataServiceImpl, MyDataRepository myDataRepository, MyDataBean myDataBean, MyDataMongoRepository myDataMongoRepository) {
         this.myDataServiceImpl = myDataServiceImpl;
         this.myDataRepository = myDataRepository;
         this.myDataBean = myDataBean;
+        this.myDataMongoRepository = myDataMongoRepository;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(ModelAndView mav){
         mav.setViewName("index");
         mav.addObject("title", "find page");
-        mav.addObject("msg", "this is sample content");
+        mav.addObject("msg", "MyDataMongoのサンプルです");
 //        Iterable<MyData> list = myDataRepository.findAllOrderByName();
-        Iterable<MyData> list = myDataServiceImpl.getAll();
+        Iterable<MyDataMongo> list = myDataMongoRepository.findAll();
+//        Iterable<MyData> list = myDataServiceImpl.getAll();
         mav.addObject("datalist", list);
         return mav;
     }
@@ -58,19 +63,10 @@ public class HelloController {
     //@Transactionalをつけることでデータベースへのアクセスをトランザクション処理にできる。またreadOnly=falseをつけるとインサートやアップデートができるようになる。
     @Transactional(readOnly=false)
     //@ModelAttribute("formModel") MyData mydataとすることでMyDataクラスをインスタンス化してformModelの値を埋め込むことができ、あとはmydataをDBにインサートすればOK。
-    public ModelAndView form(@ModelAttribute("formModel") @Validated MyData mydata, BindingResult result, ModelAndView mav){
-        ModelAndView res = null;
-        if(!result.hasErrors()){
-            myDataRepository.saveAndFlush(mydata);
-            res = new ModelAndView("redirect:/");
-        } else {
-            mav.setViewName("index");
-            mav.addObject("msg", "sorry, error is occured...");
-            Iterable<MyData> list = myDataRepository.findAll();
-            mav.addObject("datalist", list);
-            res = mav;
-        }
-        return res;
+    public ModelAndView form(@RequestParam("name") String name, @RequestParam String memo, ModelAndView mav){
+        MyDataMongo mydata = new MyDataMongo(name, memo);
+        myDataMongoRepository.save(mydata);
+        return new ModelAndView("redirect:/");
     }
 
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)

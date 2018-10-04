@@ -16,12 +16,12 @@ spring:
     mongodb:
       host: localhost
       port: 27017
-      uri: mongodb://localhost/mongodb-sample # connection URL
+      uri: mongodb://localhost/mongodb-sample
       database: mongodb-sample
-      #      authentication-database: mongovwdb
-      #      grid-fs-database:
       username: test_user
       password: test_user
+      repositories:
+        type: auto
 
 server:
   port: 9001
@@ -43,6 +43,14 @@ spring:
   data:
     mongodb:
       host: mongodb-server
+      port: 27017
+      uri: mongodb://mongodb-server/mongodb-sample
+      database: mongodb-sample
+      username: test_user
+      password: test_user
+      repositories:
+        type: auto
+
 
 server:
   port: 9000
